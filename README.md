@@ -7,6 +7,13 @@ Description
 Confiky read one or more ``.ini`` file and create a ``Confiky`` object with ``ini`` sections as sub class
 and file settings as attributes.
 
+Installation
+------------
+
+Install package as usual running ::
+
+    pip install confiky
+
 Usage
 -----
 
