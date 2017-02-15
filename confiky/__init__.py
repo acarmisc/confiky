@@ -2,7 +2,12 @@ import os
 import ConfigParser
 
 class ConfikySection:
-    pass
+    
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return "<ConfikySection %s>" % self.name
 
 
 class Confiky:
@@ -28,14 +33,14 @@ class Confiky:
             self.config = config
 
             sections = required_sections or config.sections()
-
             for section in sections:
                 if not hasattr(self, section):
-                    setattr(self, section, ConfikySection)
+                    section = ConfikySection(name=section)
+                    setattr(self, section.name, section)
                 
-                el = getattr(self, section)
-                self.sections.append(section)
-                el.__dict__.update(config.items(section))
+                el = getattr(self, section.name)
+                self.sections.append(section.name)
+                el.__dict__.update(config.items(section.name))
     
             self.sections = list(set(self.sections))
 
@@ -90,7 +95,7 @@ class Confiky:
 
 
 if __name__ == '__main__':
-    c = Confiky(files=['settings.ini', 'config.ini'])
+    c = Confiky(files='../../openerp.modernapify/settings.ini')
     print c
     print c.files
     print c.sections
