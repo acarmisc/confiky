@@ -10,7 +10,9 @@ and file settings as attributes.
 Files can be passed to constructor in three ways (evaluated in this order):
     
 1) env_arg: check for environment variable with provided name
+
 2) cli_arg: pass --cli_arg (cli_arg as you define) to the main script or who start Confiky
+
 3) files: list or string of file path
 
 Installation
