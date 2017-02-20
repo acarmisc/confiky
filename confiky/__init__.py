@@ -1,5 +1,6 @@
 import os
 import ConfigParser
+from optparse import OptionParser
 
 class ConfikySection:
     
