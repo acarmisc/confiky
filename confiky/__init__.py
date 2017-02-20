@@ -12,13 +12,40 @@ class ConfikySection:
 
 class Confiky:
 
-    def __init__(self, files=(), required_sections=list()):
-        cfile = files or './settings.ini'
+    def __init__(self, cli_arg=None, env_arg=None, files=[], required_sections=list()):
+        """
+        Confiky evalutes settings source with this order:
+        1) env_arg: check for environment variable with provided name
+        2) cli_arg: pass --cli_arg (cli_arg as you define) to the main script or who start Confiky
+        3) files: list or string of file path
+        """
+        cfile = None
+        try:
+            cfile = os.environ['MODERNAPIFYCONFIG']
+        except KeyError:
+            if cli_arg:
+                parser = OptionParser()
+                parser.add_option("--%s" % env_arg)
+
+                (options, args) = parser.parse_args()
+
+                cfile = options.settings
+
+            else:
+                cfile = files
+
+        if not cfile:
+            raise ValueError
+
         config = ConfigParser.SafeConfigParser()
         config.optionxform = str
 
         if not isinstance(cfile, list):
-            cfile = [cfile]
+            if ',' in cfile:
+                cfiles = cfile.split(',')
+                cfile = cifiles
+            else:
+                cfile = [cfile]
 
         self.files = cfile
         self.file_count = len(cfile)

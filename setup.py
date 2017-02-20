@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='confiky',
-    version='0.1.4',    
+    version='0.1.5',
     description='Read one or more .ini config file and return sections and params as object attributes',
     url='https://github.com/acarmisc/confiky',
     author='Andrea Carmisciano',
