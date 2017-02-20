@@ -5,48 +5,66 @@ from optparse import OptionParser
 class ConfikySection:
     
     def __init__(self, name):
-        self.name = name
+        self.section_name = name
 
     def __repr__(self):
-        return "<ConfikySection %s>" % self.name
+        return "<ConfikySection %s>" % self.section_name
 
 
 class Confiky:
 
-    def __init__(self, cli_arg=None, env_arg=None, files=[], required_sections=list()):
+    def __init__(self, env_arg=None, cli_arg=None, files=None, required_sections=list()):
         """
         Confiky evalutes settings source with this order:
         1) env_arg: check for environment variable with provided name
         2) cli_arg: pass --cli_arg (cli_arg as you define) to the main script or who start Confiky
-        3) files: list or string of file path
+        3) files: list or string of file path.
         """
-        cfile = None
-        try:
-            cfile = os.environ['MODERNAPIFYCONFIG']
-        except KeyError:
-            if cli_arg:
-                parser = OptionParser()
-                parser.add_option("--%s" % env_arg)
+        cfile = []
 
-                (options, args) = parser.parse_args()
+        # TODO: define order policy
 
-                cfile = options.settings
+        if env_arg:
+            if not isinstance(env_arg, list):
+                env_arg = [env_arg]
 
+            for el in env_arg:
+                try:
+                    cfile.append(os.environ[el])
+                except KeyError:
+                    pass
+
+        if cli_arg:
+            if not isinstance(cli_arg, list):
+                cli_arg = [cli_arg]
+
+            parser = OptionParser()
+            for el in cli_arg:
+                parser.add_option("--%s" % el)
+
+            (options, args) = parser.parse_args()
+
+            for el in cli_arg:               
+                if hasattr(options, el):
+                    cfile.append(getattr(options, el))
+
+        if files:
+            if not isinstance(files, list):
+                if ',' in files:
+                    els = list()
+                    for f in files.split(','):
+                        cfile.append(f)
+                
+                else:
+                    cfile.append(files)
             else:
-                cfile = files
-
+                cfile += files
+            
         if not cfile:
             raise ValueError
 
         config = ConfigParser.SafeConfigParser()
         config.optionxform = str
-
-        if not isinstance(cfile, list):
-            if ',' in cfile:
-                cfiles = cfile.split(',')
-                cfile = cifiles
-            else:
-                cfile = [cfile]
 
         self.files = cfile
         self.file_count = len(cfile)
@@ -56,20 +74,24 @@ class Confiky:
             try:
                 config.read(f)
             except Exception, e:
-                raise ValueError('Unable to find settings.ini file in the root folder and no custom file path provided.')
+                raise ValueError('Unable to find %s file in the root folder and no custom file path provided.' % f)
 
             self.config = config
 
             sections = required_sections or config.sections()
-            for section in sections:
-                if not hasattr(self, section):
-                    section = ConfikySection(name=section)
-                    setattr(self, section.name, section)
-                
-                el = getattr(self, section.name)
-                self.sections.append(section.name)
-                el.__dict__.update(config.items(section.name))
-    
+            for section_name in sections:
+            
+                if hasattr(self, section_name):
+                    section = getattr(self, section_name)
+                    section.__dict__.update(config.items(section_name))
+                else:
+                    section = ConfikySection(name=section_name)
+                    setattr(self, section_name, section)
+                    section = getattr(self, section_name)
+                    section.__dict__.update(config.items(section_name))
+            
+                self.sections.append(section)
+            
             self.sections = list(set(self.sections))
 
     def __repr__(self):
@@ -116,14 +138,14 @@ class Confiky:
     def explain(self):
         ddict = dict()
         for s in self.sections:
-            csection = getattr(self, s)
+            csection = getattr(self, s.section_name)
             ddict[s] = csection.__dict__
 
         return ddict
 
 
 if __name__ == '__main__':
-    c = Confiky(files='../../openerp.modernapify/settings.ini')
+    c = Confiky(env_arg='testme', cli_arg='settings', files='../../openerp.modernapify/settings.ini')
     print c
     print c.files
     print c.sections
