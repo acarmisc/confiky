@@ -41,7 +41,7 @@ If no valid config source is found ``ValueError`` will be raised.
 
 You can limit sections by doing:
 
-    config = Confiky(files=['foo/settings.ini', '/etc/bar.ini'], required_sections=['server', 'email])
+    config = Confiky(files=['foo/settings.ini', '/etc/bar.ini'], required_sections=['server', 'email'])
 
 To see all sections readed:
 
@@ -59,7 +59,7 @@ You can validate your config file by doing:
 
 A shortcut is also present:
 
-    >>> config.is_validate(sections=['foo'], fields=['test1', 'test2', 'test3'])
+    >>> config.is_valid(sections=['foo'], fields=['test1', 'test2', 'test3'])
     >>> True
 
 If you want to see all your settings:
