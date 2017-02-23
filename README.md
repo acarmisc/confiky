@@ -66,3 +66,12 @@ If you want to see all your settings:
 
     config.explain()
 
+
+TODO
+----
+
+- Verify configurations order policy
+- Add more informations to ``explain()`` such as setting origin
+- Override default ``__getattr__`` to handle missing setting
+
+

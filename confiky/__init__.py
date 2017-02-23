@@ -22,8 +22,6 @@ class Confiky:
         """
         cfile = []
 
-        # TODO: define order policy
-
         if env_arg:
             if not isinstance(env_arg, list):
                 env_arg = [env_arg]
