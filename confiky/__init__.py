@@ -81,12 +81,12 @@ class Confiky:
             
                 if hasattr(self, section_name):
                     section = getattr(self, section_name)
-                    section.__dict__.update(config.items(section_name))
+                    section.__dict__.update(config.items(section_name, raw=True))
                 else:
                     section = ConfikySection(name=section_name)
                     setattr(self, section_name, section)
                     section = getattr(self, section_name)
-                    section.__dict__.update(config.items(section_name))
+                    section.__dict__.update(config.items(section_name, raw=True))
             
                 self.sections.append(section)
             
