@@ -25,7 +25,7 @@ Install package as usual running:
 Usage
 -----
 
-Library must be importated as:
+Library must be imported as:
 
     from confiky import Confiky
 
