@@ -1,5 +1,5 @@
 import os
-import ConfigParser
+from configparser import ConfigParser, SafeConfigParser
 from optparse import OptionParser
 
 class ConfikySection:
@@ -61,7 +61,7 @@ class Confiky:
         if not cfile:
             raise ValueError
 
-        config = ConfigParser.SafeConfigParser()
+        config = SafeConfigParser()
         config.optionxform = str
 
         self.files = cfile
@@ -71,7 +71,7 @@ class Confiky:
         for f in cfile:
             try:
                 config.read(f)
-            except Exception, e:
+            except Exception as e:
                 raise ValueError('Unable to find %s file in the root folder and no custom file path provided.' % f)
 
             self.config = config
@@ -144,7 +144,8 @@ class Confiky:
 
 if __name__ == '__main__':
     c = Confiky(env_arg='testme', cli_arg='settings', files='../../openerp.modernapify/settings.ini')
-    print c
-    print c.files
-    print c.sections
-    print c.explain()
+    print(c)
+    print(c.files)
+    print(c.sections)
+    print(c.explain())
+
